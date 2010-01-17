@@ -191,7 +191,7 @@ begin
     try
       CabArchive.LoadArchive;
     except
-      on EAbFDICreateError do
+      on EAbCabException do
         Result := atUnknown;
     end;
   finally
@@ -554,6 +554,7 @@ begin
     FFDIContext := nil;
   end;
   if (FFCIContext <> nil) then begin
+    FCIFlushCabinet(FFCIContext, False, @FCI_GetNextCab, @FCI_Status);
     FCIDestroy(FFCIContext);
     FFCIContext := nil;
   end;
@@ -742,10 +743,8 @@ begin
 end;
 { -------------------------------------------------------------------------- }
 procedure TAbCabArchive.SaveArchive;
-  {flush cabinet file}
 begin
-  if (FFCIContext <> nil) then
-    FCIFlushCabinet(FFCIContext, False, @FCI_GetNextCab, @FCI_Status);
+  { No-op;  file is flushed in destructor }
 end;
 { -------------------------------------------------------------------------- }
 procedure TAbCabArchive.SetFolderThreshold(Value : LongWord);
